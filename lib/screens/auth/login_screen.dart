@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:we_chat/screens/home_screen.dart';
 
 import '../../main.dart';
 
@@ -10,6 +11,18 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool _isAnimated = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(milliseconds: 500), (){
+      setState(() {
+        _isAnimated = true;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     mq = MediaQuery.of(context).size;
@@ -20,10 +33,11 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: Stack(
         children: [
-          Positioned(
+          AnimatedPositioned(
             top: mq.height * .15,
-            left: mq.width * .25,
+            right: _isAnimated ? mq.width * .25 : -mq.width * .5,
             width: mq.width * .5,
+            duration: Duration(seconds: 1),
             child: Image.asset('images/chat.png'),
           ),
           Positioned(
@@ -37,7 +51,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 shape: StadiumBorder(),
                 elevation: 1,
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+              },
               icon: Image.asset('images/google.png', height: mq.height * .03,),
               label: RichText(
                 text: TextSpan(
