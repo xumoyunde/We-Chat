@@ -1,4 +1,11 @@
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:we_chat/api/apis.dart';
+import 'package:we_chat/helper/dialogs.dart';
 import 'package:we_chat/screens/home_screen.dart';
 
 import '../../main.dart';
@@ -21,6 +28,43 @@ class _LoginScreenState extends State<LoginScreen> {
         _isAnimated = true;
       });
     });
+  }
+
+
+  _handleGoogleBtnClick(){
+    Dialogs.showProgressBar(context);
+    _signInWithGoogle().then((user){
+      Navigator.pop(context);
+      if(user != null){
+        log('\nUser: ${user.user}');
+        log('\nUserAdditionalInfo: ${user.additionalUserInfo}');
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+      }
+    });
+  }
+
+  Future<UserCredential?> _signInWithGoogle() async {
+    try{
+      await InternetAddress.lookup('google.com');
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      // Once signed in, return the UserCredential
+      return await APIs.auth.signInWithCredential(credential);
+    } catch (e){
+      log('\n_signInWithGoogle: $e');
+      Dialogs.showSnackBar(context, 'Something went wrong (Check internet!');
+      return null;
+    }
   }
 
   @override
@@ -52,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 elevation: 1,
               ),
               onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+                _handleGoogleBtnClick();
               },
               icon: Image.asset('images/google.png', height: mq.height * .03,),
               label: RichText(
