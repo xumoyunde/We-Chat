@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:we_chat/models/chat_user.dart';
 
 import '../main.dart';
 
 class ChatUserCard extends StatefulWidget {
-  const ChatUserCard({Key? key}) : super(key: key);
+  final ChatUser user;
+  const ChatUserCard({Key? key, required this.user}) : super(key: key);
 
   @override
   State<ChatUserCard> createState() => _ChatUserCardState();
@@ -22,8 +24,8 @@ class _ChatUserCardState extends State<ChatUserCard> {
         onTap: (){},
         child: ListTile(
           leading: CircleAvatar(child: Icon(CupertinoIcons.person)),
-          title: Text('Demo User'),
-          subtitle: Text('Last user message', maxLines: 1,),
+          title: Text(widget.user.name),
+          subtitle: Text(widget.user.about, maxLines: 1,),
           trailing: Text('12:00 PM',
             style: TextStyle(color: Colors.black54),
           ),
