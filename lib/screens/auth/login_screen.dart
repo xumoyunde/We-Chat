@@ -119,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             text: 'Google',
                             style: TextStyle(fontWeight: FontWeight.w500),
                         ),
-                        TextSpan(text: 'bilan kirish '),
+                        TextSpan(text: ' orqali kirish'),
                       ]),
                 )),
           ),
