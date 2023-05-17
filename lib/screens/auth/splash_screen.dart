@@ -50,12 +50,12 @@ class _SplashScreenState extends State<SplashScreen> {
             bottom: mq.height * .15,
             width: mq.width,
             child: Text(
-              'MADE IN DEVCLUB WITH ❤️',
+              'DEVCLUBDA ISHLAB CHIQARILGAN ❤️',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.black87,
                 fontSize: 16,
-                letterSpacing: .5
+                letterSpacing: .5,
               ),
             ),
           ),

@@ -71,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return await APIs.auth.signInWithCredential(credential);
     } catch (e) {
       log('\n_signInWithGoogle: $e');
-      Dialogs.showSnackBar(context, 'Something went wrong (Check internet!');
+      Dialogs.showSnackBar(context, 'Nimadir noto\'g\'ri bajarildi (Internetni tekshirib ko\'ring!');
       return null;
     }
   }
@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Welcome to We Chat'),
+        title: Text('Bizning Chatga xush kelibsiz'),
       ),
       body: Stack(
         children: [
@@ -115,10 +115,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   text: TextSpan(
                       style: TextStyle(color: Colors.black, fontSize: 16),
                       children: [
-                        TextSpan(text: 'Sign In with '),
                         TextSpan(
                             text: 'Google',
-                            style: TextStyle(fontWeight: FontWeight.w500)),
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                        TextSpan(text: 'bilan kirish '),
                       ]),
                 )),
           ),

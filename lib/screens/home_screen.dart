@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:we_chat/screens/profile_screen.dart';
 
 import '../api/apis.dart';
 import '../main.dart';
@@ -26,10 +27,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: Icon(CupertinoIcons.home),
-        title: Text('We Chat'),
+        title: Text('Bizning Chat'),
         actions: [
           IconButton(onPressed: () {}, icon: Icon(Icons.search)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+          IconButton(onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => ProfileScreen(user: list[0],)));
+          }, icon: Icon(Icons.more_vert)),
         ],
       ),
       floatingActionButton: Padding(
@@ -71,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 );
               } else {
-                return const Center(child: Text('No Connection Found', style: TextStyle(fontSize: 20),));
+                return const Center(child: Text('Ulana olmadik', style: TextStyle(fontSize: 20),));
               }
           }
         },
