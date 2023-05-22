@@ -6,6 +6,7 @@ import 'package:we_chat/helper/my_date_util.dart';
 import 'package:we_chat/models/chat_user.dart';
 import 'package:we_chat/models/message.dart';
 import 'package:we_chat/screens/chat_screen.dart';
+import 'package:we_chat/widgets/dialogs/profile_dialog.dart';
 
 import '../main.dart';
 
@@ -43,14 +44,24 @@ class _ChatUserCardState extends State<ChatUserCard> {
               if (list.isNotEmpty) _message = list[0];
 
               return ListTile(
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(50),
-                  child: CachedNetworkImage(
-                    width: mq.height * .055,
-                    height: mq.height * .055,
-                    imageUrl: widget.user.image,
-                    errorWidget: (context, url, error) =>
-                        CircleAvatar(child: Icon(CupertinoIcons.person)),
+                leading: InkWell(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (_) => ProfileDialog(
+                              user: widget.user,
+                            ));
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: CachedNetworkImage(
+                      width: mq.height * .055,
+                      height: mq.height * .055,
+                      imageUrl: widget.user.image,
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) =>
+                          CircleAvatar(child: Icon(CupertinoIcons.person)),
+                    ),
                   ),
                 ),
                 title: Text(widget.user.name),
