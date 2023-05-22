@@ -6,6 +6,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:we_chat/helper/my_date_util.dart';
 import 'package:we_chat/widgets/message_card.dart';
 import '../api/apis.dart';
 import '../main.dart';
@@ -60,9 +61,11 @@ class _ChatScreenState extends State<ChatScreen> {
                         case ConnectionState.none:
                           return const Center(
                               child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: CircularProgressIndicator(strokeWidth: 2,),
-                              ));
+                            padding: EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                            ),
+                          ));
 
                         // if some or all data is loaded then show it
                         case ConnectionState.active:
@@ -131,58 +134,72 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _appBar() {
     return InkWell(
-      onTap: () {},
-      child: Row(
-        children: [
-          IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.black54,
-              )),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(50),
-            child: CachedNetworkImage(
-              width: mq.height * .055,
-              height: mq.height * .055,
-              imageUrl: widget.user.image,
-              placeholder: (context, url) => Padding(
-                padding: EdgeInsets.all(8),
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
+        onTap: () {},
+        child: StreamBuilder(
+          stream: APIs.getUserInfo(widget.user),
+          builder: (context, snapshot) {
+            final data = snapshot.data?.docs;
+            final list =
+                data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
+
+            return Row(
+              children: [
+                IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Colors.black54,
+                    )),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: CachedNetworkImage(
+                    width: mq.height * .055,
+                    height: mq.height * .055,
+                    imageUrl:
+                        list.isNotEmpty ? list[0].image : widget.user.image,
+                    placeholder: (context, url) => Padding(
+                      padding: EdgeInsets.all(8),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) =>
+                        CircleAvatar(child: Icon(CupertinoIcons.person)),
+                  ),
                 ),
-              ),
-              errorWidget: (context, url, error) =>
-                  CircleAvatar(child: Icon(CupertinoIcons.person)),
-            ),
-          ),
-          SizedBox(width: 10),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.user.name,
-                style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500),
-              ),
-              SizedBox(height: 2),
-              Text(
-                'Tarmoqda mavjud emas',
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.black54,
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
+                SizedBox(width: 10),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      list.isNotEmpty ? list[0].name : widget.user.name,
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      // 'Tarmoqda mavjud emas',
+                      list.isNotEmpty
+                          ? list[0].isOnline
+                              ? 'Tarmoqda'
+                              : MyDateUtil.getLastActiveTime(context: context, lastActive: list[0].lastActive)
+                          : MyDateUtil.getLastActiveTime(context: context, lastActive: widget.user.lastActive),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            );
+          },
+        ));
   }
 
   Widget _chatInput() {

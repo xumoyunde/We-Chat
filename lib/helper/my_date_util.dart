@@ -18,6 +18,32 @@ class MyDateUtil {
     return '${sent.day} ${_getMonth(sent)}';
   }
 
+  static String getLastActiveTime(
+      {required BuildContext context, required String lastActive}) {
+    final int i = int.tryParse(lastActive) ?? -1;
+
+    //if time is not available then return below statement
+    if (i == -1) return 'Tarmoqda mavjud emas';
+
+    DateTime time = DateTime.fromMillisecondsSinceEpoch(i);
+    DateTime now = DateTime.now();
+
+    String formattedTime = TimeOfDay.fromDateTime(time).format(context);
+    if (time.day == now.day &&
+        time.month == now.month &&
+        time.year == time.year) {
+      return 'Oxirgi marta bugun kirgan: $formattedTime';
+    }
+
+    if ((now.difference(time).inHours / 24).round() == 1) {
+      return 'Oxirgi marta kecha kirgan: $formattedTime';
+    }
+
+    String month = _getMonth(time);
+
+    return 'Oxirgi marta kirgan: ${time.day} $month $formattedTime';
+  }
+
   static String _getMonth(DateTime date) {
     switch (date.month) {
       case 1:
