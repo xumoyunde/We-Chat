@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:we_chat/api/apis.dart';
+import 'package:we_chat/helper/my_date_util.dart';
 import 'package:we_chat/models/message.dart';
 
 import '../main.dart';
@@ -21,35 +23,57 @@ class _MessageCardState extends State<MessageCard> {
   }
 
   Widget _blueMessage() {
+    //update last read message if sender and receiver are different
+    if (widget.message.read.isEmpty) {
+      APIs.updateMessageReadStatus(widget.message);
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Flexible(
           child: Container(
-            padding: EdgeInsets.all(mq.width * .04),
+            padding: EdgeInsets.all(widget.message.type == Type.image ? mq.width * .02 : mq.width * .04),
             margin: EdgeInsets.symmetric(
               horizontal: mq.width * .04,
               vertical: mq.height * .01,
             ),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.lightBlue),
-              color: Colors.lightBlueAccent.shade100,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-                bottomRight: Radius.circular(20),
-              )
-            ),
-            child: Text(
+                border: Border.all(color: Colors.lightBlue),
+                color: Colors.lightBlueAccent.shade100,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                )),
+            child: widget.message.type == Type.text
+                ?
+            //show text
+            Text(
               widget.message.msg,
-              style: TextStyle(fontSize: 15, color: Colors.black87),
+              style: const TextStyle(fontSize: 15, color: Colors.black87),
+            )
+                :
+            //show image
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: CachedNetworkImage(
+                imageUrl: widget.message.msg,
+                placeholder: (context, url) => const Padding(
+                  padding: EdgeInsets.all(0),
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                errorWidget: (context, url, error) =>
+                const Icon(Icons.image, size: 70),
+              ),
             ),
           ),
         ),
         Padding(
           padding: EdgeInsets.only(right: mq.width * .04),
           child: Text(
-            widget.message.sent,
+            MyDateUtil.getFormattedTime(
+                context: context, time: widget.message.sent),
             style: TextStyle(fontSize: 13, color: Colors.black54),
           ),
         )
@@ -64,17 +88,22 @@ class _MessageCardState extends State<MessageCard> {
         Row(
           children: [
             SizedBox(width: mq.width * .04),
-            Icon(Icons.done_all_rounded, color: Colors.blue, size: 20,),
+
+            //double tick blue icon for message read
+            if (widget.message.read.isNotEmpty)
+              const Icon(Icons.done_all_rounded, color: Colors.blue, size: 20),
+
             SizedBox(width: 2),
             Text(
-              '${widget.message.read}12:00 PM',
-              style: TextStyle(fontSize: 13, color: Colors.black54),
+              MyDateUtil.getFormattedTime(
+                  context: context, time: widget.message.sent),
+              style: TextStyle(fontSize: 13, color: Colors.black87),
             ),
           ],
         ),
         Flexible(
           child: Container(
-            padding: EdgeInsets.all(mq.width * .04),
+            padding: EdgeInsets.all(widget.message.type == Type.image ? mq.width * .02 :mq.width * .04),
             margin: EdgeInsets.symmetric(
               horizontal: mq.width * .04,
               vertical: mq.height * .01,
@@ -86,11 +115,27 @@ class _MessageCardState extends State<MessageCard> {
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
                   bottomLeft: Radius.circular(20),
-                )
-            ),
-            child: Text(
+                )),
+            child: widget.message.type == Type.text
+                ?
+            //show text
+            Text(
               widget.message.msg,
-              style: TextStyle(fontSize: 15, color: Colors.black87),
+              style: const TextStyle(fontSize: 15, color: Colors.black87),
+            )
+                :
+            //show image
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: CachedNetworkImage(
+                imageUrl: widget.message.msg,
+                placeholder: (context, url) => const Padding(
+                  padding: EdgeInsets.all(0),
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                errorWidget: (context, url, error) =>
+                const Icon(Icons.image, size: 70),
+              ),
             ),
           ),
         ),
