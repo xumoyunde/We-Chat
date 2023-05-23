@@ -19,24 +19,29 @@ class ProfileDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       content: SizedBox(
         width: mq.width * .6,
-        height: mq.height * .35,
+        height: mq.height * .4,
         child: Stack(
           children: [
-            Positioned(
-              top: mq.height * .075,
-              left: mq.width * .12,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(mq.height * .3),
-                child: CachedNetworkImage(
-                  width: mq.height * .25,
-                  height: mq.height * .25,
-                  imageUrl: user.image,
-                  fit: BoxFit.cover,
-                  errorWidget: (context, url, error) =>
-                      CircleAvatar(child: Icon(CupertinoIcons.person)),
-                ),
-              ),
-            ),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: mq.height * .08,
+                    width: mq.width,
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * .3),
+                    child: CachedNetworkImage(
+                      width: mq.height * .25,
+                      height: mq.height * .25,
+                      imageUrl: user.image,
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) =>
+                          CircleAvatar(child: Icon(CupertinoIcons.person)),
+                    ),
+                  ),
+                ]),
             Positioned(
                 left: mq.width * .04,
                 top: mq.height * .02,

@@ -286,8 +286,8 @@ class _MessageCardState extends State<MessageCard> {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
-
-          contentPadding: EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 10),
+              contentPadding:
+                  EdgeInsets.only(left: 24, right: 24, top: 20, bottom: 10),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15)),
               title: Row(
